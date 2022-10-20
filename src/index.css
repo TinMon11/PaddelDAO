@@ -4,7 +4,10 @@ body {
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #7700ee;
+  background-image: url("../assets/images/background.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   color: #fff;
   overflow-x: hidden;
 }
@@ -55,6 +58,18 @@ h1 {
   align-content: center;
   display: flex;
   text-align: center;
+}
+
+.landing h1 {
+  background-color: black;
+  margin-bottom: 10px;
+}
+
+.landing h2 {
+  align-self: center;
+  background-color: white;
+  color: black;
+  width: fit-content;
 }
 
 .member-page > div {
@@ -110,8 +125,18 @@ h1 {
   background-color: #fff;
   padding: 1rem;
   border-radius: 1rem;
-  color: #000;
+  color: #000;border-top: none;
   box-shadow: 3.1px 6.2px 6.2px hsl(0deg 0% 0% / 0.4);
+}
+
+.btn-hero {
+  align-self: center;
+  cursor: pointer;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  width: 300px;
 }
 
 button {
