@@ -21,8 +21,8 @@ const App = () => {
 
   return (
     <div className="landing">
-      <h1>Welcome to the Club 🥎<h1>
-      </h1> Let's start.</h1>
+      <h1>Welcome to the Club 🥎</h1>
+      <h2> Let's start.</h2>
     </div>
   );
 }
