@@ -1,8 +1,10 @@
 
-import { useAddress, useMetamask, useEditionDrop, useToken, useVote, useNetwork   } from '@thirdweb-dev/react';
-import { useState, useEffect, useMemo  } from 'react';
+import { useAddress, useMetamask, useEditionDrop, useToken, useVote, useNetwork } from '@thirdweb-dev/react';
+import { useState, useEffect, useMemo } from 'react';
 import { AddressZero } from "@ethersproject/constants";
 import { ChainId } from '@thirdweb-dev/sdk'
+import { ethers } from "ethers";
+
 
 
 
@@ -20,129 +22,129 @@ const App = () => {
   const vote = useVote("0xA8a791C010f2ac03C9c2fEcA33727BA96893364A");
 
 
-  
+
   // State variable for us to know if user has our NFT.
   const [hasClaimedNFT, setHasClaimedNFT] = useState(false);
   // isClaiming lets us easily keep a loading state while the NFT is minting.
   const [isClaiming, setIsClaiming] = useState(false);
 
   // Holds the amount of token each member has in state.
-const [memberTokenAmounts, setMemberTokenAmounts] = useState([]);
-// The array holding all of our members addresses.
-const [memberAddresses, setMemberAddresses] = useState([]);
+  const [memberTokenAmounts, setMemberTokenAmounts] = useState([]);
+  // The array holding all of our members addresses.
+  const [memberAddresses, setMemberAddresses] = useState([]);
 
-// A fancy function to shorten someones wallet address, no need to show the whole thing. 
-const shortenAddress = (str) => {
-  return str.substring(0, 6) + "..." + str.substring(str.length - 4);
-};
-
-
-const [proposals, setProposals] = useState([]);
-const [isVoting, setIsVoting] = useState(false);
-const [hasVoted, setHasVoted] = useState(false);
-
-// Retrieve all our existing proposals from the contract.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
-
-  // A simple call to vote.getAll() to grab the proposals.
-  const getAllProposals = async () => {
-    try {
-      const proposals = await vote.getAll();
-      setProposals(proposals);
-      console.log("🌈 Proposals:", proposals);
-    } catch (error) {
-      console.log("failed to get proposals", error);
-    }
+  // A fancy function to shorten someones wallet address, no need to show the whole thing. 
+  const shortenAddress = (str) => {
+    return str.substring(0, 6) + "..." + str.substring(str.length - 4);
   };
-  getAllProposals();
-}, [hasClaimedNFT, vote]);
 
-// We also need to check if the user already voted.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
 
-  // If we haven't finished retrieving the proposals from the useEffect above
-  // then we can't check if the user voted yet!
-  if (!proposals.length) {
-    return;
-  }
+  const [proposals, setProposals] = useState([]);
+  const [isVoting, setIsVoting] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
 
-  const checkIfUserHasVoted = async () => {
-    try {
-      const hasVoted = await vote.hasVoted(proposals[0].proposalId, address);
-      setHasVoted(hasVoted);
-      if (hasVoted) {
-        console.log("🥵 User has already voted");
-      } else {
-        console.log("🙂 User has not voted yet");
+  // Retrieve all our existing proposals from the contract.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
+    }
+
+    // A simple call to vote.getAll() to grab the proposals.
+    const getAllProposals = async () => {
+      try {
+        const proposals = await vote.getAll();
+        setProposals(proposals.reverse());
+        console.log("🌈 Proposals:", proposals);
+      } catch (error) {
+        console.log("failed to get proposals", error);
       }
-    } catch (error) {
-      console.error("Failed to check if wallet has voted", error);
-    }
-  };
-  checkIfUserHasVoted();
+    };
+    getAllProposals();
+  }, [hasClaimedNFT, vote]);
 
-}, [hasClaimedNFT, proposals, address, vote]);
-
-
-// This useEffect grabs all the addresses of our members holding our NFT.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
-
-  // Just like we did in the 7-airdrop-token.js file! Grab the users who hold our NFT
-  // with tokenId 0.
-  const getAllAddresses = async () => {
-    try {
-      const memberAddresses = await editionDrop.history.getAllClaimerAddresses(0);
-      setMemberAddresses(memberAddresses);
-      console.log("🚀 Members addresses", memberAddresses);
-    } catch (error) {
-      console.error("failed to get member list", error);
+  // We also need to check if the user already voted.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
     }
 
-  };
-  getAllAddresses();
-}, [hasClaimedNFT, editionDrop.history]);
-
-// This useEffect grabs the # of token each member holds.
-useEffect(() => {
-  if (!hasClaimedNFT) {
-    return;
-  }
-
-  const getAllBalances = async () => {
-    try {
-      const amounts = await token.history.getAllHolderBalances();
-      setMemberTokenAmounts(amounts);
-      console.log("👜 Amounts", amounts);
-    } catch (error) {
-      console.error("failed to get member balances", error);
+    // If we haven't finished retrieving the proposals from the useEffect above
+    // then we can't check if the user voted yet!
+    if (!proposals.length) {
+      return;
     }
-  };
-  getAllBalances();
-}, [hasClaimedNFT, token.history]);
 
-// Now, we combine the memberAddresses and memberTokenAmounts into a single array
-const memberList = useMemo(() => {
-  return memberAddresses.map((address) => {
-    // We're checking if we are finding the address in the memberTokenAmounts array.
-    // If we are, we'll return the amount of token the user has.
-    // Otherwise, return 0.
-    const member = memberTokenAmounts?.find(({ holder }) => holder === address);
+    const checkIfUserHasVoted = async () => {
+      try {
+        const hasVoted = await vote.hasVoted(proposals[0].proposalId, address);
+        setHasVoted(hasVoted);
+        if (hasVoted) {
+          console.log("🥵 User has already voted");
+        } else {
+          console.log("🙂 User has not voted yet");
+        }
+      } catch (error) {
+        console.error("Failed to check if wallet has voted", error);
+      }
+    };
+    checkIfUserHasVoted();
 
-    return {
-      address,
-      tokenAmount: member?.balance.displayValue || "0",
+  }, [hasClaimedNFT, proposals, address, vote]);
+
+
+  // This useEffect grabs all the addresses of our members holding our NFT.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
     }
-  });
-}, [memberAddresses, memberTokenAmounts]);
+
+    // Just like we did in the 7-airdrop-token.js file! Grab the users who hold our NFT
+    // with tokenId 0.
+    const getAllAddresses = async () => {
+      try {
+        const memberAddresses = await editionDrop.history.getAllClaimerAddresses(0);
+        setMemberAddresses(memberAddresses);
+        console.log("🚀 Members addresses", memberAddresses);
+      } catch (error) {
+        console.error("failed to get member list", error);
+      }
+
+    };
+    getAllAddresses();
+  }, [hasClaimedNFT, editionDrop.history]);
+
+  // This useEffect grabs the # of token each member holds.
+  useEffect(() => {
+    if (!hasClaimedNFT) {
+      return;
+    }
+
+    const getAllBalances = async () => {
+      try {
+        const amounts = await token.history.getAllHolderBalances();
+        setMemberTokenAmounts(amounts);
+        console.log("👜 Amounts", amounts);
+      } catch (error) {
+        console.error("failed to get member balances", error);
+      }
+    };
+    getAllBalances();
+  }, [hasClaimedNFT, token.history]);
+
+  // Now, we combine the memberAddresses and memberTokenAmounts into a single array
+  const memberList = useMemo(() => {
+    return memberAddresses.map((address) => {
+      // We're checking if we are finding the address in the memberTokenAmounts array.
+      // If we are, we'll return the amount of token the user has.
+      // Otherwise, return 0.
+      const member = memberTokenAmounts?.find(({ holder }) => holder === address);
+
+      return {
+        address,
+        tokenAmount: member?.balance.displayValue || "0",
+      }
+    });
+  }, [memberAddresses, memberTokenAmounts]);
 
 
   useEffect(() => {
@@ -170,6 +172,41 @@ const memberList = useMemo(() => {
   }, [address, editionDrop]);
 
 
+  const onNewProposal = async () => {
+    const balance = Number((await token.balanceOf(address)).displayValue)
+    console.log(balance)
+
+    if (balance >= 30000) {
+     try {
+       // Create proposal to mint 300,000 new token to the treasury.
+       const amount = prompt("Insert Amount Required for your proposal");
+       const description = prompt("Insert Your Proposal") + " $PDL needed: "+ amount
+       const executions = [
+         {
+           toAddress: token.getAddress(),
+           nativeTokenValue: 0,
+           transactionData: token.encoder.encode(
+             "mintTo", [
+             vote.getAddress(),
+             ethers.utils.parseUnits(amount.toString(), 18),
+           ]
+           ),
+         }
+     ];
+
+       await vote.propose(description, executions);
+
+       console.log("✅ Successfully created proposal to " + description);
+     } catch (error) {
+       console.error("failed to create your proposal", error);
+       process.exit(1);
+     }
+     const proposals = await vote.getAll();
+     setProposals(proposals.reverse())
+    } else {
+      alert ("Your $PDL amount is: " + balance +". You need at least 30000 $PDL to make a Proposal ")
+    }
+  }
 
 
   const mintNft = async () => {
@@ -242,7 +279,10 @@ const memberList = useMemo(() => {
             </table>
           </div>
           <div>
-            <h2>Active Proposals</h2>
+            <div className='proposalHeader'>
+              <button className='newProposalButton' onClick={onNewProposal}>New Proposal</button>
+              <h2>Active Proposals</h2>
+            </div>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -371,18 +411,18 @@ const memberList = useMemo(() => {
   };
 
 
-// Render mint nft screen.
-return (
-  <div className="mint-nft">
-    <h1>Mint your free Paddel Club Membership NFT</h1>
-    <button
-      disabled={isClaiming}
-      onClick={mintNft}
-    >
-      {isClaiming ? "Minting..." : "Mint your nft (FREE)"}
-    </button>
-  </div>
-);
+  // Render mint nft screen.
+  return (
+    <div className="mint-nft">
+      <h1>Mint your free Paddel Club Membership NFT</h1>
+      <button
+        disabled={isClaiming}
+        onClick={mintNft}
+      >
+        {isClaiming ? "Minting..." : "Mint your nft (FREE)"}
+      </button>
+    </div>
+  );
 }
 
 export default App;

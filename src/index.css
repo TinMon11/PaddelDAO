@@ -60,6 +60,25 @@ h1 {
   text-align: center;
 }
 
+.proposalHeader{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.newProposalButton{
+  background-image: linear-gradient(to bottom right, blue, rgb(214, 99, 119));
+  padding: 5px;
+  width: 200px;
+  font-size: 16px;
+}
+
+.newProposalButton:hover {
+  border: 2px solid white;
+}
+
 .landing h1,
 .member-page h1 {
   background-color: black;
