@@ -7,7 +7,7 @@ import sdk from "./1-initialize-sdk.js";
       name: "Paddel DAO Governance Contract",
 
       // This is the location of our governance token, our ERC-20 contract!
-      voting_token_address: "0x5EFC224b8e17F8De3982B631D4Ae1cbb9dc027B4",
+      voting_token_address: "0x8D1A7B42ab381500F46b9e8DB5B4A1202b5A6B24",
 
       // These parameters are specified in number of blocks. 
       // Assuming block time of around 13.14 seconds (for Ethereum)

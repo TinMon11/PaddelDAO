@@ -2,7 +2,7 @@ import sdk from "./1-initialize-sdk.js";
 import { ethers } from "ethers";
 
 // This is our governance contract.
-const vote = sdk.getVote("0x8eB7CF89de5435FbaFe9F91F4217440f59242eA0");
+const vote = sdk.getVote("0xA8a791C010f2ac03C9c2fEcA33727BA96893364A");
 
 // This is our ERC-20 contract.
 const token = sdk.getToken("0x8D1A7B42ab381500F46b9e8DB5B4A1202b5A6B24");
