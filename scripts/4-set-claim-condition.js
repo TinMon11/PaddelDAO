@@ -1,7 +1,7 @@
 import sdk from "./1-initialize-sdk.js";
 import { MaxUint256 } from "@ethersproject/constants";
 
-const editionDrop = await sdk.getEditionDrop("0x5EFC224b8e17F8De3982B631D4Ae1cbb9dc027B4");
+const editionDrop = sdk.getEditionDrop("0x5EFC224b8e17F8De3982B631D4Ae1cbb9dc027B4");
 
 (async () => {
   try {
@@ -13,7 +13,7 @@ const editionDrop = await sdk.getEditionDrop("0x5EFC224b8e17F8De3982B631D4Ae1cbb
       // The maximum number of NFTs that can be claimed.
       maxQuantity: 10_000,
       // The price of our NFT (free)
-      price: 0.0005,
+      price: 0,
       // The amount of NFTs people can claim in one transaction.
       quantityLimitPerTransaction: 5,
       // We set the wait between transactions to MaxUint256, which means

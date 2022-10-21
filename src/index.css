@@ -60,12 +60,16 @@ h1 {
   text-align: center;
 }
 
-.landing h1 {
+.landing h1,
+.member-page h1 {
   background-color: black;
   margin-bottom: 10px;
+  font-size: 4rem;
 }
 
+.member-page h2,
 .landing h2 {
+  font-size: 2.5rem;
   align-self: center;
   background-color: white;
   color: black;
@@ -140,6 +144,8 @@ h1 {
 }
 
 button {
+  align-self: center;
+  width: 300px;
   cursor: pointer;
   background-color: #000;
   color: #fff;

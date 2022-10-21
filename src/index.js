@@ -7,7 +7,7 @@ import App from './App';
 import { ChainId, ThirdwebProvider } from '@thirdweb-dev/react';
 
 // This is the chainId your dApp will work on.
-const activeChainId = ChainId.Goerli;
+const activeChainId = ChainId.Mumbai;
 
 // Wrap your app with the thirdweb provider
 ReactDOM.render(
