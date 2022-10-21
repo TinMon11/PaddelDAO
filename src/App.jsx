@@ -1,13 +1,16 @@
 
-import { useAddress, useMetamask, useEditionDrop, useToken, useVote  } from '@thirdweb-dev/react';
+import { useAddress, useMetamask, useEditionDrop, useToken, useVote, useNetwork   } from '@thirdweb-dev/react';
 import { useState, useEffect, useMemo  } from 'react';
 import { AddressZero } from "@ethersproject/constants";
+import { ChainId } from '@thirdweb-dev/sdk'
+
 
 
 
 const App = () => {
 
   const address = useAddress();
+  const network = useNetwork();
   const connectWithMetamask = useMetamask();
   console.log("👋 Address:", address);
 
@@ -183,6 +186,18 @@ const memberList = useMemo(() => {
     }
   };
 
+  if (address && (network?.[0].data.chain.id !== ChainId.Mumbai)) {
+    return (
+      <div className="unsupported-network">
+        <h2>Please connect to Mumbai</h2>
+        <p>
+          This dapp only works on the Mumabi network, please switch networks
+          in your connected wallet.
+        </p>
+      </div>
+    );
+  }
+
   // This is the case where the user hasn't connected their wallet
   // to your web app. Let them call connectWallet.
 
@@ -190,7 +205,7 @@ const memberList = useMemo(() => {
     return (
       <div className="landing">
         <h1>Welcome to PaddelDAO</h1>
-        <h2>The First DAO for Paddel Lovers & Inverstors</h2>
+        <h2>The First DAO for Paddel Lovers & Investors</h2>
         <button onClick={connectWithMetamask} className="btn-hero">
           Connect your wallet
         </button>
